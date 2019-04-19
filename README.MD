@@ -6,6 +6,23 @@ Headlines in newspapers do not follow normal grammatical rules of the English La
 ## What is "Canonicalization"?
 A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines.In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
 
+## Prerequisites and Install Process:
+The project depends on several external libraries
+* newspaper3k -> Downloading Headlines automatically<br>
+`pip install newspaper3k`
+* requests, bs4 -> Using the online stanford parser<br>
+`pip install requests beautifulsoup4`
+* pyStatParser -> Python Statistical Parser alternative to Stanford Parser<br>
+`Download https://github.com/emilmont/pyStatParser, Run setup.py`
+* allennlp (Optional) -> allennlp parser<br>
+`pip install allennlp`
+* wiktionaryparser -> searching for abbreviations online corpus<br>
+`pip install wiktionaryparser`
+
+## Structure of Project:
+* README.MD -> Explanation and Main Analysis.
+* `download.py` -> code for downloading
+
 ## Rules:
 Certain rules can be formulated for automatic conversion of headlines into canonical forms.
 
