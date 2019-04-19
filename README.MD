@@ -4,7 +4,7 @@
 Headlines in newspapers do not follow normal grammatical rules of the English Language. Instead, headlines have a distinct yet coherent syntax that incorporates brevity of speech while emphasizing the important part of the document. However, this means that while extracting a parse from headlines, many statistical parsers such as Stanford Parser will fail. One solution to this problem can be to create a seperate parser just for headlines. Alternatively, headlines can be preprocessed to work with normal parser. 
 
 ## What is "Canonicalization"?
-A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines.In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
+A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines. In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
 
 ## Prerequisites and Install Process:
 The project depends on several external libraries
@@ -22,6 +22,22 @@ The project depends on several external libraries
 ## Structure of Project:
 * README.MD -> Explanation and Main Analysis.
 * `download.py` -> code for downloading
+```
+  usage: download.py [-h] NEWSPAPER
+
+  Download News Headlines from popular Newspapers. The output format is one
+  headline per line which can be stored in a file using the command python
+  download.py>headlines.txt Note: Certain headlines may be malformed so as an
+  error their urls are printed.
+
+  positional arguments:
+    NEWSPAPER   website of the newspaper from which to download the headlines
+                from www.cnbc.com zeenews.india.com www.business-standard.com
+                www.bloombergquint.com www.indiatoday.in www.news18.com
+
+  optional arguments:
+    -h, --help  show this help message and exit
+```
 * `parse.py` -> code for parsing using a given parser
 ```
   usage: parse.py [-h] [-p {pystat,stanford,allen}] file
@@ -38,6 +54,19 @@ The project depends on several external libraries
     -h, --help            show this help message and exit
     -p {pystat,stanford,allen}, --parser {pystat,stanford,allen}
                           parser to be used
+```
+* `rules.py` -> code for applying rules to automatically canonicalize sentences
+```
+usage: rules.py [-h] file
+
+Apply all the rules to a file in the same format as generted by headlines.py.
+Currently Implemented Rule: Capitalization
+
+positional arguments:
+  file        input file
+
+optional arguments:
+  -h, --help  show this help message and exit
 ```
 ## Rules:
 Certain rules can be formulated for automatic conversion of headlines into canonical forms.
@@ -119,30 +148,30 @@ Stanford:
 )
 ```
 
-
-
-QUOTE: Remove all quotations as they are easily mistaken for POS
-
-‘Waterbodies being filled up with sand’
+#### 3.QUOTE:
+Remove all quotations as they are easily mistaken for POS
+```
+Original : ‘Waterbodies being filled up with sand’
+Stanford:
 (ROOT (FRAG (VP (`` `) (VBZ Waterbodies) (S (VP (VBG being) (VP (VBN filled) (PRT (RP up)) (PP (IN with)
-(NP (NN sand) (POS ')))))))))
+  (NP (NN sand) (POS '))))))))
+)
+```
 
+#### 4.COMMA:
+Comma is used as a substitute for and. All such commas need to be replaced by and as the second argument to the comma easily mistaken for VB
 
-
-
-COMMA: Comma is used as a substitute for and. All such commas need to be replaced by and as the second argument to the comma easily mistaken for VB
-
-
-COLON1: 
-A :B  -> A said B
+#### 5.COLON
+Colon in a headline can mean  3 things:
+1. A :B  -> A said B
+```
 U.N. to Israel: Withdraw from Arab territory
-
-
-COLON2: 
-A: B   -> B said A
+```
+2. A: B   -> B said A
+```
 Unite to fight dark forces in digital space: PM
-
-
-COLON3:
-A: B   -> regarding A,B
+```
+3. A: B   -> regarding A,B
+```
 Bhiwandi collapse: death toll rises to 4
+```
