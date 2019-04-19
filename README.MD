@@ -1,9 +1,66 @@
-Rules:
+# HeadLine Parsing (HID334 Project)
+
+## What is Headline Parsing?
+Headlines in newspapers do not follow normal grammatical rules of the English Language. Instead, headlines have a distinct yet coherent syntax that incorporates brevity of speech while emphasizing the important part of the document. However, this means that while extracting a parse from headlines, many statistical parsers such as Stanford Parser will fail. One solution to this problem can be to create a seperate parser just for headlines. Alternatively, headlines can be preprocessed to work with normal parser. 
+
+## What is "Canonicalization"?
+A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines.In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
+
+## Rules:
+Certain rules can be formulated for automatic conversion of headlines into canonical forms.
+
+### Implemented:
+#### 1. CAPITALIZATION: 
+Headlines often have spurious and random capitalization of words in the middle of sentences just for thematic effect or for emphasis. Confusingly, headlines also contain a host of acronyms and abbreivations the are already capitalized correctly. This leads to random words being labelled as Proper Nouns (NNP) by the parser.
+**Solution**:
+Remove all CAPS words not in corpus of abbreviations. 
+**Implementation**:
+For the implementation of this rule in rules.py, for every all caps word, I search the online dictionary [Wikictionary](https://www.wiktionary.org/) for the word having that exact capitalization. If it does exist then it is most likely an acronym. Otherwise convert it to lowercase.
+```
+Original: View from the CUPBOARD
+Stanford:
+(ROOT 
+  (NP (NP (NNP View)) (PP (IN from) (NP (DT the) (NNP CUPBOARD))))
+)
+Canonical:
+This is the view from the cupboard
+Stanford:
+(ROOT 
+  (S (NP (DT This)) (VP (VBZ is) (NP (NP (NN view)) (PP (IN from) (NP (DT the) (NN cupboard))))))
+)
+```
+
+### Unimplemented:
 
 
+#### 1. IS:
+Due to lack of verbs in sentences, some nouns or adjectives are marked as verbs especially for stanford parser. This is specifically due to the fact that headlines avoid generally the types of words that are obvious such as "is, are, were" etc which show existance and can therefore be inferred from context. Due to lack of verb-ish words in the sentence, the parser mistakenly identifies other words as verbs and vice versa.
+```
+Original: Unsafe practice in spraying pesticide killing farmers
+Stanford:
+(ROOT
+  (S (VP (VB Unsafe) (NP (NN practice)) (PP (IN in) 
+  (S (VP (VBG spraying) (NP (NN pesticide) (NN killing) (NNS farmers)))))))
+ )
+PyStatParser:
+(NP+S 
+  (NP (NP (JJ unsafe) (NN practice)) (PP (IN in) 
+  (NP (VBG spraying) (NN pesticide)))) (VP (VBG killing) (NP (NNS farmers)))
+)
+```
+**Solution**:
+We can insert a dummy verb as is/ are/ was etc wherever a Noun Phrase is given so as to disambiguate the sentence. 
+```
+Original:  Unsafe practice in spraying pesticide killing farmers
+Canonical: Unsafe practice in spraying pesticide is killing farmers
+Stanford:
+(ROOT 
+  (S (NP (NP (JJ Unsafe) (NN practice)) (PP (IN in) 
+  (S (VP (VBG spraying) (NP (NN pesticide)))))) (VP (VBZ is) (VP (VBG killing) (NP (NNS farmers)))))
+)
+```
 
-IS:
-Due to lack of verbs in sentences, some nouns or adjectives are marked as verbs. We can insert a dummy verb as is/ are/ was etc wherever a Noun Phrase is given so as to disambiguate the sentence. Implemantations:
+**Possible Implementations**:
 Infinitive -> is + infinitive
 Unmanned level crossing gates to go ‘smart’ soon
 Unmanned level crossing gates are to go ‘smart’ soon
@@ -11,12 +68,12 @@ Passive Verb -> is + passive verb
 Varun Dhawan captured on the wrong side of the law
 Varun Dhawan was captured on the wrong side of the law
 
-Unsafe practice in spraying pesticide killing farmers
-(ROOT (S (VP (VB Unsafe) (NP (NN practice)) (PP (IN in) (S (VP (VBG spraying) (NP (NN pesticide) (NN killing) (NNS farmers))))))))
 
-(ROOT (S (NP (NP (JJ Unsafe) (NN practice)) (PP (IN in) (S (VP (VBG spraying) (NP (NN pesticide)))))) (VP (VBZ is) (VP (VBG killing) (NP (NNS farmers))))))
 
-(NP+S (NP (NP (JJ unsafe) (NN practice)) (PP (IN in) (NP (VBG spraying) (NN pesticide)))) (VP (VBG killing) (NP (NNS farmers))))
+
+
+
+
 
 
 
@@ -62,9 +119,4 @@ Bhiwandi collapse: death toll rises to 4
 
 
 
-
-CAPITALIZATION: Remove all CAPS words not in corpus of abbreviations
-
-(ROOT (NP (NP (NNP View)) (PP (IN from) (NP (DT the) (NNP CUPBOARD)))))
-(ROOT (S (NP (DT This)) (VP (VBZ is) (NP (NP (NN view)) (PP (IN from) (NP (DT the) (NN cupboard)))))))
 
