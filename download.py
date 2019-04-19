@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 Download News Headlines from popular Newspapers.
 The output format is one headline per line which can be

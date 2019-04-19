@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 Parse the given sentence using a parser such as Stanford Parser, PyStatParser or AllenNlp Parser
 Takes input in the form of a file of newline seperated sentences and outputs the parse in a similar format.
@@ -6,15 +6,14 @@ The parse notation of various parsers may be significantly different.
 """
 
 class stanford:
-    from urllib.parse import urlencode, quote_plus
-    import bs4
-    import requests
-    
-    def parse(self,line):    
-        q=self.urlencode({'query':line}, quote_via=self.quote_plus)
+    def parse(self,line):
+        from urllib.parse import urlencode, quote_plus
+        import bs4
+        import requests
+        q=urlencode({'query':line}, quote_via=quote_plus)
         URL = "http://nlp.stanford.edu:8080/parser?"+q
-        r = self.requests.get(URL)
-        soup = self.bs4.BeautifulSoup(r.content, 'html5lib')
+        r = requests.get(URL)
+        soup = bs4.BeautifulSoup(r.content, 'html5lib')
         return ' '.join(soup.find('pre').text.split())
 
 class pystat:
@@ -49,9 +48,9 @@ if __name__ == "__main__":
                         default = 'stanford',
                         help='parser to be used')
     args = parser.parse_args()
-    sent_parser = vars()[args.parser]
-    with open(args.file) as infile, open(args.file[:-4]+'parsed_'+args.parser+args.file[-4:],'w') as outfile:
+    sent_parser = vars()[args.parser]()
+    with open(args.file) as infile, open(args.file[:-4]+'_parsed_'+args.parser+args.file[-4:],'w') as outfile:
         for line in infile.readlines():
-            parsed = sent_parser.parsex(line)
+            parsed = sent_parser.parse(line)
             outfile.write(parsed)
             outfile.write('\n')
