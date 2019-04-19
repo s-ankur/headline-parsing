@@ -22,16 +22,13 @@ Stanford:
 (ROOT 
   (NP (NP (NNP View)) (PP (IN from) (NP (DT the) (NNP CUPBOARD))))
 )
-Canonical:
-This is the view from the cupboard
+Canonical: This is the view from the cupboard
 Stanford:
 (ROOT 
   (S (NP (DT This)) (VP (VBZ is) (NP (NP (NN view)) (PP (IN from) (NP (DT the) (NN cupboard))))))
 )
 ```
-
 ### Unimplemented:
-
 
 #### 1. IS:
 Due to lack of verbs in sentences, some nouns or adjectives are marked as verbs especially for stanford parser. This is specifically due to the fact that headlines avoid generally the types of words that are obvious such as "is, are, were" etc which show existance and can therefore be inferred from context. Due to lack of verb-ish words in the sentence, the parser mistakenly identifies other words as verbs and vice versa.
@@ -61,33 +58,33 @@ Stanford:
 ```
 
 **Possible Implementations**:
-Infinitive -> is + infinitive
-Unmanned level crossing gates to go ‘smart’ soon
-Unmanned level crossing gates are to go ‘smart’ soon
-Passive Verb -> is + passive verb
-Varun Dhawan captured on the wrong side of the law
-Varun Dhawan was captured on the wrong side of the law
+1. Infinitive -> is + infinitive
+```
+Original: Unmanned level crossing gates to go ‘smart’ soon
+Canonical: Unmanned level crossing gates are to go ‘smart’ soon
+```
+2. Passive Verb -> is + passive verb
+```
+Original: Varun Dhawan captured on the wrong side of the law
+Canonical: Varun Dhawan was captured on the wrong side of the law
+```
 
-
-
-
-
-
-
-
-
-
-
-
-THEREIS: Similar to above, but here we need to insert There is instead of is.
-Implementations:
-
-VMA annual festival from tomorrow
-
-(ROOT (S (VP (VB VMA) (NP (JJ annual) (NN festival)) (PP (IN from) (NP (NN tomorrow))))))
-
-(ROOT (S (NP (EX There)) (VP (VBZ is) (NP (NP (NNP VMA) (JJ annual) (NN festival)) (PP (IN from) (NP (NN tomorrow)))))))
-
+#### 2.THEREIS: 
+Similar to above, but here we need to insert There is instead of is.
+**Possible Implementations**:
+```
+Original: VMA annual festival from tomorrow
+Stanford:
+(ROOT 
+  (S (VP (VB VMA) (NP (JJ annual) (NN festival)) (PP (IN from) (NP (NN tomorrow)))))
+)
+Canonical: There is VMA annual festival from tomorrow.
+Stanford:
+(ROOT 
+  (S (NP (EX There)) (VP (VBZ is) (NP (NP (NNP VMA) (JJ annual) 
+  (NN festival)) (PP (IN from) (NP (NN tomorrow))))))
+)
+```
 
 
 
@@ -116,7 +113,3 @@ Unite to fight dark forces in digital space: PM
 COLON3:
 A: B   -> regarding A,B
 Bhiwandi collapse: death toll rises to 4
-
-
-
-
