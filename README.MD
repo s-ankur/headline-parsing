@@ -22,7 +22,23 @@ The project depends on several external libraries
 ## Structure of Project:
 * README.MD -> Explanation and Main Analysis.
 * `download.py` -> code for downloading
+* `parse.py` -> code for parsing using a given parser
+```
+  usage: parse.py [-h] [-p {pystat,stanford,allen}] file
 
+  Parse the given sentence using a parser such as Stanford Parser, PyStatParser
+  or AllenNlp Parser Takes input in the form of a file of newline seperated
+  sentences and outputs the parse in a similar format. The parse notation of
+  various parsers may be significantly different.
+
+  positional arguments:
+    file                  input file
+
+  optional arguments:
+    -h, --help            show this help message and exit
+    -p {pystat,stanford,allen}, --parser {pystat,stanford,allen}
+                          parser to be used
+```
 ## Rules:
 Certain rules can be formulated for automatic conversion of headlines into canonical forms.
 
