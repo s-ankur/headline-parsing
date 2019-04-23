@@ -5,7 +5,7 @@ Headlines in newspapers do not follow normal grammatical rules of the English La
 For more info about the differences between normal English and headline English, see [this](https://www.chronicle.com/blogs/linguafranca/2013/02/18/the-grammar-of-newspaper-headlines/).
 
 ## What is "Canonicalization"?
-A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines. In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
+A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines. In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. The process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
 
 ## Prerequisites and Install Process:
 The project depends on several external libraries
@@ -26,7 +26,7 @@ The project depends on several external libraries
   * 5_Ankur.csv -> Original Headlines provided
   * 5_Ankur_canonical.csv -> manually canonicalized sentences
   * 5_Ankur.ods -> contains orignial and canonical sentences along with the rules identified for each parse
-
+  * 5_Ankur_parsed
 * `download.py` -> code for downloading
 ```
   usage: download.py [-h] NEWSPAPER
@@ -63,16 +63,19 @@ The project depends on several external libraries
 ```
 * `rules.py` -> code for applying rules to automatically canonicalize sentences
 ```
-usage: rules.py [-h] file
+usage: rules.py [-h] [-e EXCLUDE] file
 
 Apply all the rules to a file in the same format as generted by headlines.py.
-Currently Implemented Rule: Capitalization
+Currently Implemented Rule: Capitalization(C) Quote(Q) Is(I)
 
 positional arguments:
-  file        input file
+  file                  input file
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -e EXCLUDE, --exclude EXCLUDE
+                        rules to exclude ['Q', 'C', 'I']
+
 ```
 ## Rules:
 Certain rules can be formulated for automatic conversion of headlines into canonical forms.
@@ -80,9 +83,9 @@ Certain rules can be formulated for automatic conversion of headlines into canon
 ### Implemented:
 #### 1. CAPITALIZATION: 
 Headlines often have spurious and random capitalization of words in the middle of sentences just for thematic effect or for emphasis. Confusingly, headlines also contain a host of acronyms and abbreivations the are already capitalized correctly. This leads to random words being labelled as Proper Nouns (NNP) by the parser.
-**Solution**:
+<br>**Solution**:<br>
 Remove all CAPS words not in corpus of abbreviations. 
-**Implementation**:
+<br>**Implementation**:<br>
 For the implementation of this rule in rules.py, for every all caps word, I search the online dictionary [Wikictionary](https://www.wiktionary.org/) for the word having that exact capitalization. If it does exist then it is most likely an acronym. Otherwise convert it to lowercase.
 ```
 Original: View from the CUPBOARD
@@ -96,9 +99,9 @@ Stanford:
   (S (NP (DT This)) (VP (VBZ is) (NP (NP (NN view)) (PP (IN from) (NP (DT the) (NN cupboard))))))
 )
 ```
-### Unimplemented:
 
-#### 1. IS:
+
+#### 2. IS:
 Due to lack of verbs in sentences, some nouns or adjectives are marked as verbs especially for stanford parser. This is specifically due to the fact that headlines avoid generally the types of words that are obvious such as "is, are, were" etc which show existance and can therefore be inferred from context. Due to lack of verb-ish words in the sentence, the parser mistakenly identifies other words as verbs and vice versa.
 ```
 Original: Unsafe practice in spraying pesticide killing farmers
@@ -113,19 +116,25 @@ PyStatParser:
   (NP (VBG spraying) (NN pesticide)))) (VP (VBG killing) (NP (NNS farmers)))
 )
 ```
-**Solution**:
-We can insert a dummy verb as is/ are/ was etc wherever a Noun Phrase is given so as to disambiguate the sentence. 
+**Solution**:<br>
+The solution used currently is slightly ad hoc. My observation is that stanford is noun biased and identifies verbs as nouns. Moreover, generally pystat correctly identifies verbs. So, whenever pystat thinks something is a verb and stanford thinks it is a noun we can insert our dummy verb 'is'. While this will not work in all cases, the easiest cases are solved by this method.
 ```
 Original:  Unsafe practice in spraying pesticide killing farmers
-Canonical: Unsafe practice in spraying pesticide is killing farmers
 Stanford:
 (ROOT 
   (S (NP (NP (JJ Unsafe) (NN practice)) (PP (IN in) 
   (S (VP (VBG spraying) (NP (NN pesticide)))))) (VP (VBZ is) (VP (VBG killing) (NP (NNS farmers)))))
 )
+Pystat:
+(NP+S 
+ (NP (NP (JJ unsafe) (NN practice)) (PP (IN in)
+ (NP (VBG spraying) (NN pesticide)))) (VP (VBG killing) (NP (NNS farmers)))
+)
+Automatic Canonical: Unsafe practice in spraying pesticide is killing farmers
+
 ```
 
-**Possible Implementations**:
+**Possible Future Implementations**:
 1. Infinitive -> is + infinitive
 ```
 Original: Unmanned level crossing gates to go ‘smart’ soon
@@ -137,7 +146,21 @@ Original: Varun Dhawan captured on the wrong side of the law
 Canonical: Varun Dhawan was captured on the wrong side of the law
 ```
 
-#### 2.THEREIS: 
+
+#### 3.QUOTE:
+Remove all quotations as they are easily mistaken for possessives.
+```
+Original : ‘Waterbodies being filled up with sand’
+Stanford:
+(ROOT (FRAG (VP (`` `) (VBZ Waterbodies) (S (VP (VBG being) (VP (VBN filled) (PRT (RP up)) (PP (IN with)
+  (NP (NN sand) (POS '))))))))
+)
+Automatic Canonical: Waterbodies being filled up with sand
+```
+
+### Unimplemented:
+
+#### 1.THEREIS: 
 Similar to above, but here we need to insert There is instead of is.
 **Possible Implementations**:
 ```
@@ -154,20 +177,10 @@ Stanford:
 )
 ```
 
-#### 3.QUOTE:
-Remove all quotations as they are easily mistaken for possessives.
-```
-Original : ‘Waterbodies being filled up with sand’
-Stanford:
-(ROOT (FRAG (VP (`` `) (VBZ Waterbodies) (S (VP (VBG being) (VP (VBN filled) (PRT (RP up)) (PP (IN with)
-  (NP (NN sand) (POS '))))))))
-)
-```
-
-#### 4.COMMA:
+#### 2.COMMA:
 Comma is used as a substitute for and. All such commas need to be replaced by and as the second argument to the comma easily mistaken for VB
 
-#### 5.COLON
+#### 3.COLON
 Colon in a headline can mean  3 things:
 1. A :B  -> A said B
 ```
