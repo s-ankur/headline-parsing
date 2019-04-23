@@ -5,7 +5,7 @@ Headlines in newspapers do not follow normal grammatical rules of the English La
 For more info about the differences between normal English and headline English, see [this](https://www.chronicle.com/blogs/linguafranca/2013/02/18/the-grammar-of-newspaper-headlines/).
 
 ## What is "Canonicalization"?
-A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines. In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
+A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines. In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. The process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
 
 ## Prerequisites and Install Process:
 The project depends on several external libraries
@@ -74,7 +74,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -e EXCLUDE, --exclude EXCLUDE
-                        rule to exclude ['Q', 'C', 'I']
+                        rules to exclude ['Q', 'C', 'I']
 
 ```
 ## Rules:
@@ -83,9 +83,9 @@ Certain rules can be formulated for automatic conversion of headlines into canon
 ### Implemented:
 #### 1. CAPITALIZATION: 
 Headlines often have spurious and random capitalization of words in the middle of sentences just for thematic effect or for emphasis. Confusingly, headlines also contain a host of acronyms and abbreivations the are already capitalized correctly. This leads to random words being labelled as Proper Nouns (NNP) by the parser.
-**Solution**:
+<br>**Solution**:<br>
 Remove all CAPS words not in corpus of abbreviations. 
-**Implementation**:
+<br>**Implementation**:<br>
 For the implementation of this rule in rules.py, for every all caps word, I search the online dictionary [Wikictionary](https://www.wiktionary.org/) for the word having that exact capitalization. If it does exist then it is most likely an acronym. Otherwise convert it to lowercase.
 ```
 Original: View from the CUPBOARD
