@@ -21,6 +21,11 @@ The project depends on several external libraries
 
 ## Structure of Project:
 * README.MD -> Explanation and Main Analysis.
+* data -> directory containing the example headlines for the project
+  * 5_Ankur.csv -> Original Headlines provided
+  * 5_Ankur_canonical.csv -> manually canonicalized sentences
+  * 5_Ankur.ods -> contains orignial and canonical sentences along with the rules identified for each parse
+
 * `download.py` -> code for downloading
 ```
   usage: download.py [-h] NEWSPAPER
