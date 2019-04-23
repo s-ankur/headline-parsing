@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+Apply all the rules to a file in the same format as generted by headlines.py.
+Currently Implemented Rule: Capitalization
+"""
 
 from wiktionaryparser import WiktionaryParser
 from stat_parser import Parser
