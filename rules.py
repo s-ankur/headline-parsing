@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument('file', type=str,
                         help='input file')
     parser.add_argument('-e','--exclude',type = str,default='',
-                        help = f'rule to exclude {list(rules.keys())}')
+                        help = f'rules to exclude {list(rules.keys())}')
     args = parser.parse_args()
     ans = []
     with open(args.file) as infile:
