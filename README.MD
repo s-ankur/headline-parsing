@@ -1,7 +1,8 @@
 # HeadLine Parsing (HID334 Project)
 
 ## What is Headline Parsing?
-Headlines in newspapers do not follow normal grammatical rules of the English Language. Instead, headlines have a distinct yet coherent syntax that incorporates brevity of speech while emphasizing the important part of the document. However, this means that while extracting a parse from headlines, many statistical parsers such as Stanford Parser will fail. One solution to this problem can be to create a seperate parser just for headlines. Alternatively, headlines can be preprocessed to work with normal parser. 
+Headlines in newspapers do not follow normal grammatical rules of the English Language. Instead, headlines have a distinct yet coherent syntax that incorporates brevity of speech while emphasizing the important part of the document. However, this means that while extracting a parse from headlines, many statistical parsers such as Stanford Parser will fail. One solution to this problem can be to create a seperate parser just for headlines. Alternatively, headlines can be preprocessed to work with normal parser. <br>
+For more info about the differences between normal English and headline English, see [this](https://www.chronicle.com/blogs/linguafranca/2013/02/18/the-grammar-of-newspaper-headlines/).
 
 ## What is "Canonicalization"?
 A solution to the problem of an explosion of syntactic parses of headlines is to  assign canonical forms to the headlines. In order for parsers to understand headlines, certain changes to them have to be made so that the original meaning of the headline is preserved as far as possible while at the same time, the headline has to be made to conform to normal grammar. THe process of canonicalization is hard, as headlines come in many formats and there are few universal forms of headlines. Moreover, there are several irregularities in how they are formatted. Certain general rules can be formulated that apply to most headlines, however it is very difficult to get the correct parse on each and every sentence. The purpose of a canonical form is to ensure a correct parse by conversion or approximation of the headline to a normal english sentence so as to remove ambiguity and reduce errors. 
@@ -21,6 +22,11 @@ The project depends on several external libraries
 
 ## Structure of Project:
 * README.MD -> Explanation and Main Analysis.
+* data -> directory containing the example headlines for the project
+  * 5_Ankur.csv -> Original Headlines provided
+  * 5_Ankur_canonical.csv -> manually canonicalized sentences
+  * 5_Ankur.ods -> contains orignial and canonical sentences along with the rules identified for each parse
+
 * `download.py` -> code for downloading
 ```
   usage: download.py [-h] NEWSPAPER
@@ -149,7 +155,7 @@ Stanford:
 ```
 
 #### 3.QUOTE:
-Remove all quotations as they are easily mistaken for POS
+Remove all quotations as they are easily mistaken for possessives.
 ```
 Original : ‘Waterbodies being filled up with sand’
 Stanford:
