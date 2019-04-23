@@ -63,16 +63,19 @@ The project depends on several external libraries
 ```
 * `rules.py` -> code for applying rules to automatically canonicalize sentences
 ```
-usage: rules.py [-h] file
+usage: rules.py [-h] [-e EXCLUDE] file
 
 Apply all the rules to a file in the same format as generted by headlines.py.
-Currently Implemented Rule: Capitalization
+Currently Implemented Rule: Capitalization(C) Quote(Q) Is(I)
 
 positional arguments:
-  file        input file
+  file                  input file
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -e EXCLUDE, --exclude EXCLUDE
+                        rule to exclude ['Q', 'C', 'I']
+
 ```
 ## Rules:
 Certain rules can be formulated for automatic conversion of headlines into canonical forms.
