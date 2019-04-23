@@ -116,8 +116,8 @@ PyStatParser:
   (NP (VBG spraying) (NN pesticide)))) (VP (VBG killing) (NP (NNS farmers)))
 )
 ```
-**Solution**:
-The solution used currently is slightly ad hoc. My observation is that stanford is noun biased and identifies verbs as nouns. Moreover, generally pystat correctly identifies verbs. So, whenever pystat thinks something is a verb and stanford thinks it is a noun we can insery our dummy verb. While this will not work in all cases, the easiest cases are solved by this method.
+**Solution**:<br>
+The solution used currently is slightly ad hoc. My observation is that stanford is noun biased and identifies verbs as nouns. Moreover, generally pystat correctly identifies verbs. So, whenever pystat thinks something is a verb and stanford thinks it is a noun we can insert our dummy verb 'is'. While this will not work in all cases, the easiest cases are solved by this method.
 ```
 Original:  Unsafe practice in spraying pesticide killing farmers
 Stanford:
