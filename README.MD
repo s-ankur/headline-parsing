@@ -117,18 +117,24 @@ PyStatParser:
 )
 ```
 **Solution**:
-We can insert a dummy verb as is/ are/ was etc wherever a Noun Phrase is given so as to disambiguate the sentence. 
+The solution used currently is slightly ad hoc. My observation is that stanford is noun biased and identifies verbs as nouns. Moreover, generally pystat correctly identifies verbs. So, whenever pystat thinks something is a verb and stanford thinks it is a noun we can insery our dummy verb. While this will not work in all cases, the easiest cases are solved by this method.
 ```
 Original:  Unsafe practice in spraying pesticide killing farmers
-Canonical: Unsafe practice in spraying pesticide is killing farmers
 Stanford:
 (ROOT 
   (S (NP (NP (JJ Unsafe) (NN practice)) (PP (IN in) 
   (S (VP (VBG spraying) (NP (NN pesticide)))))) (VP (VBZ is) (VP (VBG killing) (NP (NNS farmers)))))
 )
+Pystat:
+(NP+S 
+ (NP (NP (JJ unsafe) (NN practice)) (PP (IN in)
+ (NP (VBG spraying) (NN pesticide)))) (VP (VBG killing) (NP (NNS farmers)))
+)
+Automatic Canonical: Unsafe practice in spraying pesticide is killing farmers
+
 ```
 
-**Possible Implementations**:
+**Possible Future Implementations**:
 1. Infinitive -> is + infinitive
 ```
 Original: Unmanned level crossing gates to go ‘smart’ soon
@@ -149,6 +155,7 @@ Stanford:
 (ROOT (FRAG (VP (`` `) (VBZ Waterbodies) (S (VP (VBG being) (VP (VBN filled) (PRT (RP up)) (PP (IN with)
   (NP (NN sand) (POS '))))))))
 )
+Automatic Canonical: Waterbodies being filled up with sand
 ```
 
 ### Unimplemented:
