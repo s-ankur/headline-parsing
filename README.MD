@@ -26,7 +26,7 @@ The project depends on several external libraries
   * 5_Ankur.csv -> Original Headlines provided
   * 5_Ankur_canonical.csv -> manually canonicalized sentences
   * 5_Ankur.ods -> contains orignial and canonical sentences along with the rules identified for each parse
-
+  * 5_Ankur_parsed
 * `download.py` -> code for downloading
 ```
   usage: download.py [-h] NEWSPAPER
@@ -99,9 +99,9 @@ Stanford:
   (S (NP (DT This)) (VP (VBZ is) (NP (NP (NN view)) (PP (IN from) (NP (DT the) (NN cupboard))))))
 )
 ```
-### Unimplemented:
 
-#### 1. IS:
+
+#### 2. IS:
 Due to lack of verbs in sentences, some nouns or adjectives are marked as verbs especially for stanford parser. This is specifically due to the fact that headlines avoid generally the types of words that are obvious such as "is, are, were" etc which show existance and can therefore be inferred from context. Due to lack of verb-ish words in the sentence, the parser mistakenly identifies other words as verbs and vice versa.
 ```
 Original: Unsafe practice in spraying pesticide killing farmers
@@ -140,7 +140,20 @@ Original: Varun Dhawan captured on the wrong side of the law
 Canonical: Varun Dhawan was captured on the wrong side of the law
 ```
 
-#### 2.THEREIS: 
+
+#### 3.QUOTE:
+Remove all quotations as they are easily mistaken for possessives.
+```
+Original : ‘Waterbodies being filled up with sand’
+Stanford:
+(ROOT (FRAG (VP (`` `) (VBZ Waterbodies) (S (VP (VBG being) (VP (VBN filled) (PRT (RP up)) (PP (IN with)
+  (NP (NN sand) (POS '))))))))
+)
+```
+
+### Unimplemented:
+
+#### 1.THEREIS: 
 Similar to above, but here we need to insert There is instead of is.
 **Possible Implementations**:
 ```
@@ -157,20 +170,10 @@ Stanford:
 )
 ```
 
-#### 3.QUOTE:
-Remove all quotations as they are easily mistaken for possessives.
-```
-Original : ‘Waterbodies being filled up with sand’
-Stanford:
-(ROOT (FRAG (VP (`` `) (VBZ Waterbodies) (S (VP (VBG being) (VP (VBN filled) (PRT (RP up)) (PP (IN with)
-  (NP (NN sand) (POS '))))))))
-)
-```
-
-#### 4.COMMA:
+#### 2.COMMA:
 Comma is used as a substitute for and. All such commas need to be replaced by and as the second argument to the comma easily mistaken for VB
 
-#### 5.COLON
+#### 3.COLON
 Colon in a headline can mean  3 things:
 1. A :B  -> A said B
 ```
