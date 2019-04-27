@@ -26,37 +26,41 @@ class capitalization:
                 ans.append(word)
         return ' '.join(ans)
 
+
 class verb_add:
     def __init__(self):
         self.stanford = parse.stanford()
-        self.pystat =parse.pystat()
+        self.pystat = parse.pystat()
 
-    def mismatch(self,sent):
-        parse1=self.pos(sent,self.stanford)
-        parse2=self.pos(sent,self.pystat)
-        for token1, token2 in zip(parse1,parse2):
+    def mismatch(self, sent):
+        parse1 = self.pos(sent, self.stanford)
+        parse2 = self.pos(sent, self.pystat)
+        for token1, token2 in zip(parse1, parse2):
 
             if token1[1].startswith('N') and token2[1].startswith('V'):
                 return token1[0]
-            
-    def pos(self,sent,parser):
+
+    def pos(self, sent, parser):
         return nltk.Tree.fromstring(parser.parse(sent)).pos()
 
-    def apply(self,sent):
-        mismatch= self.mismatch(sent)
+    def apply(self, sent):
+        mismatch = self.mismatch(sent)
         if mismatch:
-            return sent.replace(mismatch,'is '+mismatch)
+            return sent.replace(mismatch, 'is ' + mismatch)
         return sent
 
+
 class strip_quotes:
-    quotes = "'`"+'"'+"‘’"
-    def apply(self,sent):
+    quotes = "'`" + '"' + "‘’"
+
+    def apply(self, sent):
         return ''.join([i for i in sent if i not in self.quotes])
 
+
 rules = OrderedDict((
-        ('Q',strip_quotes()),
-        ('C',capitalization()),
-        ('I',verb_add()),
+    ('Q', strip_quotes()),
+    ('C', capitalization()),
+    ('I', verb_add()),
 ))
 
 
@@ -66,13 +70,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('file', type=str,
                         help='input file')
-    parser.add_argument('-e','--exclude',type = str,default='',
-                        help = f'rules to exclude {list(rules.keys())}')
+    parser.add_argument('-e', '--exclude', type=str, default='',
+                        help=f'rules to exclude {list(rules.keys())}')
     args = parser.parse_args()
     ans = []
     with open(args.file) as infile:
         for sent in infile.readlines():
-            sent= sent.strip()
+            sent = sent.strip()
             for rule in rules:
                 if rule not in args.exclude:
                     sent = rules[rule].apply(sent)

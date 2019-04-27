@@ -6,6 +6,8 @@ The parse notation of various parsers may be significantly different.
 """
 
 import nltk.tree
+
+
 class stanford:
     def parse(self, line):
         from urllib.parse import urlencode, quote_plus
