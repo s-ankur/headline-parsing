@@ -26,7 +26,7 @@ The project depends on several external libraries
   * 5_Ankur.csv -> Original Headlines provided
   * 5_Ankur_canonical.csv -> manually canonicalized sentences
   * 5_Ankur.ods -> contains orignial and canonical sentences along with the rules identified for each parse
-  * 5_Ankur_parsed
+  * 5_Ankur_parsed* -> parses using different parsers
 * `download.py` -> code for downloading
 ```
   usage: download.py [-h] NEWSPAPER
